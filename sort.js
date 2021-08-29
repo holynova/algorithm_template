@@ -1,3 +1,4 @@
+const { log } = require("./utils/debug");
 const { genCase, it } = require("./utils/sortTest");
 
 const utils = {};
@@ -7,7 +8,7 @@ function quickSort(arr) {
     [list[l], list[r]] = [list[r], list[l]];
   }
 
-  // 不包括r的索引
+  // 包括l, 不包括r
   function partition(list, l, r) {
     let p = list[r - 1];
     let index = l;
@@ -27,11 +28,25 @@ function quickSort(arr) {
   return arr;
 }
 
-function main() {
-  for (let i = 0; i < 100; i++) {
+function testSort(n = 99999, sortMethod) {
+  let right = 0;
+  let wrong = 0;
+  let wrongCase = [];
+  for (let i = 0; i < n; i++) {
     let inputs = genCase(100, -1000, 1000);
-    it(inputs, quickSort(inputs));
+
+    if (it(inputs, quickSort(inputs))) {
+      right++;
+    } else {
+      wrongCase.push(inputs);
+      wrong++;
+    }
   }
+  log(`通过${right}, 未通过${wrong}, 通过率${Math.floor((right * 100) / n)}%`);
+}
+
+function main() {
+  testSort();
 }
 
 main();
